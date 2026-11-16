@@ -1,12 +1,428 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>My website</title>
-  </head>
-  <body>
-    <h1>Yo<h1>
-    <p>this will be better</p>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>My Page</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── RESET ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ─── TOKENS ─────────────────────────────────────────────────── */
+    :root {
+      --overlay:  rgba(0, 0, 0, 0.45);   /* dim the video so text pops */
+      --btn-bg:   rgba(255, 255, 255, 0.12);
+      --btn-border: rgba(255, 255, 255, 0.35);
+      --btn-hover-bg: rgba(255, 255, 255, 0.28);
+      --btn-hover-border: rgba(255, 255, 255, 0.80);
+      --text:     #ffffff;
+      --text-dim: rgba(255, 255, 255, 0.65);
+      --radius:   14px;
+      --font:     'Inter', system-ui, sans-serif;
+    }
+
+    /* ─── LAYOUT ─────────────────────────────────────────────────── */
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+      color: var(--text);
+      overflow: hidden; /* full-screen feel */
+    }
+
+    .scene {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+    }
+
+    /* ─── VIDEO BACKGROUND ───────────────────────────────────────── */
+    /*
+     * HOW TO ADD YOUR OWN VIDEO
+     * 1. Name your video file exactly:  background.mp4
+     * 2. Place it in the SAME folder as this index.html file.
+     * 3. Commit and push both files to GitHub — done!
+     *
+     * The video loops automatically and plays silently (required by browsers).
+     * Supported format: .mp4  (H.264 codec is safest for all browsers)
+     * Note: .mp3 is an audio-only format. For a video background you need .mp4.
+     */
+    #bg-video {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;   /* fills the screen, no black bars */
+      z-index: -2;
+    }
+
+    /* dark overlay so buttons/text are always readable */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--overlay);
+      z-index: -1;
+    }
+
+    /* ─── TITLE ──────────────────────────────────────────────────── */
+    /*
+     * HOW TO CHANGE THE TITLE
+     * Find the <h1> tag below and replace "My Links" with whatever you want.
+     */
+    .page-title {
+      font-size: clamp(2rem, 6vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-align: center;
+      margin-bottom: 0.25rem;
+      text-shadow: 0 2px 24px rgba(0,0,0,0.5);
+    }
+
+    .page-subtitle {
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      color: var(--text-dim);
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+
+    /* ─── BUTTON GRID ────────────────────────────────────────────── */
+    /*
+     * HOW TO ADD / REMOVE BUTTONS
+     * See the <div class="btn-grid"> section in the body below.
+     * Each button is one <a> tag. Copy/paste to add more, delete to remove.
+     */
+    .btn-grid {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      max-width: 400px;
+      padding: 0 1.5rem;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 16px 22px;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--btn-border);
+      background: var(--btn-bg);
+      backdrop-filter: blur(16px) saturate(1.4);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
+      color: var(--text);
+      text-decoration: none;
+      font-family: var(--font);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.14s ease,
+        box-shadow 0.18s ease;
+      /* subtle glow on the card itself */
+      box-shadow: 0 2px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .btn:hover {
+      background: var(--btn-hover-bg);
+      border-color: var(--btn-hover-border);
+      transform: translateY(-2px) scale(1.015);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.14);
+    }
+
+    .btn:active {
+      transform: translateY(0) scale(0.99);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    }
+
+    /* icon on the right side of each button */
+    .btn-arrow {
+      opacity: 0.55;
+      font-size: 1rem;
+      transition: opacity 0.18s, transform 0.18s;
+    }
+    .btn:hover .btn-arrow {
+      opacity: 1;
+      transform: translateX(3px);
+    }
+
+    /* optional colored left accent bar per button */
+    .btn[data-color]::before {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 1.4em;
+      border-radius: 2px;
+      background: attr(data-color color, transparent);
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    /* individual accent colors — set via data-color on each <a> */
+    .btn[data-color="#4ade80"]::before { background: #4ade80; }
+    .btn[data-color="#60a5fa"]::before { background: #60a5fa; }
+    .btn[data-color="#f472b6"]::before { background: #f472b6; }
+    .btn[data-color="#fb923c"]::before { background: #fb923c; }
+    .btn[data-color="#a78bfa"]::before { background: #a78bfa; }
+    .btn[data-color="#facc15"]::before { background: #facc15; }
+
+    .btn-label { flex: 1; text-align: left; }
+
+    /* ─── AUDIO BUTTON ───────────────────────────────────────────── */
+    /*
+     * This button sits in the bottom-right corner.
+     * It starts muted (because browsers block audio autoplay).
+     * The visitor clicks it once to unmute and hear the music.
+     * Clicking again mutes it. The music always loops.
+     */
+    #audio-btn {
+      position: fixed;
+      bottom: 1.2rem;
+      right: 1.4rem;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1.5px solid var(--btn-border);
+      background: var(--btn-bg);
+      backdrop-filter: blur(16px) saturate(1.4);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s, border-color 0.18s, transform 0.14s;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+      user-select: none;
+    }
+    #audio-btn:hover {
+      background: var(--btn-hover-bg);
+      border-color: var(--btn-hover-border);
+      transform: scale(1.05);
+    }
+    #audio-btn:active { transform: scale(0.97); }
+
+    /* animated equalizer bars — shown when audio is playing */
+    .eq {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 14px;
+    }
+    .eq span {
+      display: block;
+      width: 3px;
+      border-radius: 2px;
+      background: #fff;
+      animation: eq-bounce 0.8s ease-in-out infinite alternate;
+    }
+    .eq span:nth-child(1) { height: 6px;  animation-delay: 0s;    }
+    .eq span:nth-child(2) { height: 12px; animation-delay: 0.15s; }
+    .eq span:nth-child(3) { height: 8px;  animation-delay: 0.3s;  }
+    .eq span:nth-child(4) { height: 14px; animation-delay: 0.1s;  }
+
+    @keyframes eq-bounce {
+      from { transform: scaleY(0.35); }
+      to   { transform: scaleY(1);    }
+    }
+
+    /* when muted, freeze the bars */
+    #audio-btn.muted .eq span { animation-play-state: paused; opacity: 0.35; }
+
+    /* ─── FOOTER ─────────────────────────────────────────────────── */
+    .footer {
+      position: fixed;
+      bottom: 1.2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .btn-grid { max-width: 100%; }
+    }
+
+    /* respect reduced-motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      .btn { transition: none; }
+      #bg-video { display: none; }
+      body { background: #111; }
+    }
+  </style>
+</head>
+<body>
+
+  <!--
+  ═══════════════════════════════════════════════════════════════════
+   VIDEO BACKGROUND
+   ───────────────────────────────────────────────────────────────
+   • Place your video file (named background.mp4) next to index.html
+   • The `loop` attribute makes it repeat forever automatically
+   • `muted` is required — browsers block autoplay with sound
+   • `playsinline` prevents iOS from going fullscreen
+  ═══════════════════════════════════════════════════════════════════
+  -->
+  <video id="bg-video" autoplay muted loop playsinline>
+    <source src="background.mp4" type="video/mp4" />
+    <!-- If the video file is missing, the page still looks good
+         because the dark overlay and blur still work. -->
+  </video>
+
+  <!-- semi-transparent dark layer over the video -->
+  <div class="overlay"></div>
+
+  <div class="scene">
+
+    <!--
+    ───────────────────────────────────────────────────────────────
+    TITLE  —  change "My Links" to your name or anything you like
+    ───────────────────────────────────────────────────────────────
+    -->
+    <h1 class="page-title">My Links</h1>
+    <p class="page-subtitle">Choose where to go</p>
+
+    <!--
+    ═══════════════════════════════════════════════════════════════════
+     BUTTONS
+     ───────────────────────────────────────────────────────────────
+     Each <a> tag is one button. To customise:
+
+       href="https://..."     → the website it opens (keep the https://)
+       target="_blank"        → opens in a new tab (remove to open in same tab)
+       data-color="#HEX"      → small colored accent bar on the left
+                                 available colors: #4ade80 (green)  #60a5fa (blue)
+                                                   #f472b6 (pink)   #fb923c (orange)
+                                                   #a78bfa (purple) #facc15 (yellow)
+                                 or remove the data-color attribute entirely for no bar
+
+       The text between <span class="btn-label"> and </span>
+       is what appears on the button — change it freely.
+
+     To ADD a button: copy one <a>…</a> block and paste it, then edit.
+     To REMOVE a button: delete the whole <a>…</a> block.
+    ═══════════════════════════════════════════════════════════════════
+    -->
+    <div class="btn-grid">
+
+      <a class="btn" href="https://github.com" target="_blank" rel="noopener" data-color="#f472b6">
+        <span class="btn-label">GitHub</span>
+        <span class="btn-arrow">↗</span>
+      </a>
+
+      <a class="btn" href="https://youtube.com" target="_blank" rel="noopener" data-color="#fb923c">
+        <span class="btn-label">YouTube</span>
+        <span class="btn-arrow">↗</span>
+      </a>
+
+      <a class="btn" href="https://twitter.com" target="_blank" rel="noopener" data-color="#60a5fa">
+        <span class="btn-label">Twitter / X</span>
+        <span class="btn-arrow">↗</span>
+      </a>
+
+      <a class="btn" href="https://discord.com" target="_blank" rel="noopener" data-color="#a78bfa">
+        <span class="btn-label">Discord</span>
+        <span class="btn-arrow">↗</span>
+      </a>
+
+      <a class="btn" href="https://example.com" target="_blank" rel="noopener" data-color="#4ade80">
+        <span class="btn-label">My Website</span>
+        <span class="btn-arrow">↗</span>
+      </a>
+
+    </div><!-- /btn-grid -->
+
+  </div><!-- /scene -->
+
+  <!--
+  ═══════════════════════════════════════════════════════════════════
+   BACKGROUND AUDIO
+   ───────────────────────────────────────────────────────────────
+   HOW TO ADD YOUR OWN MUSIC
+   1. Name your audio file exactly:  music.mp3
+   2. Place it in the SAME folder as this index.html file.
+   3. Commit and push both files to GitHub — done!
+
+   The music loops forever automatically (the `loop` attribute).
+   It starts MUTED because browsers will not allow audio to
+   autoplay with sound — the visitor must click the ♪ button
+   in the bottom-right corner to unmute it.
+
+   Supported formats: .mp3  (most compatible)
+                      .ogg  (open alternative — add a second
+                             <source> line if you want both)
+  ═══════════════════════════════════════════════════════════════════
+  -->
+  <audio id="bg-audio" loop>
+    <source src="music.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!--
+   AUDIO TOGGLE BUTTON
+   The animated bars show it's playing; faded bars = muted.
+   You can change the label text "Music" to anything you like.
+  -->
+  <button id="audio-btn" class="muted" aria-label="Toggle music" title="Toggle music">
+    <div class="eq">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <span id="audio-label">Music</span>
+  </button>
+
+  <script>
+    // ── Audio toggle logic ──────────────────────────────────────────
+    // Browsers block audio autoplay until the user interacts with
+    // the page. This button is that interaction — clicking it starts
+    // the audio and toggles mute on/off for every click after.
+    const btn   = document.getElementById('audio-btn');
+    const audio = document.getElementById('bg-audio');
+    let started = false;
+
+    btn.addEventListener('click', () => {
+      if (!started) {
+        // First click: start playing
+        audio.play().catch(() => {
+          // If it still fails (e.g. some strict browsers), just ignore
+        });
+        started = true;
+      }
+
+      // Toggle mute
+      audio.muted = !audio.muted;
+
+      if (audio.muted) {
+        btn.classList.add('muted');
+        btn.setAttribute('aria-label', 'Unmute music');
+      } else {
+        btn.classList.remove('muted');
+        btn.setAttribute('aria-label', 'Mute music');
+      }
+    });
+    // ───────────────────────────────────────────────────────────────
+  </script>
+
+  <!--
+  Change the footer text or delete the whole <p> tag to remove it.
+  -->
+  <p class="footer">© 2026 My Page</p>
+
+</body>
 </html>
